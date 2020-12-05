@@ -15,7 +15,7 @@ user_add() {
 user_login() {
   read -p "Enter username: " username
   read -p "Enter password: " password
-  result=$(psql -t -d postgres -c "select id from users where username = '$username'")
+  result=$(psql -t -d postgres -c "select id from users where username = '$username' and password = '$password'")
   if test -z "$result"; then
     echo "No users found with that information."
   else
