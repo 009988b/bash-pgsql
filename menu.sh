@@ -41,7 +41,18 @@ vehicle_add() {
   fi
 }
 
+show_owned_vehicles() {
+  search_results=""
+  result=$(psql -t -d postgres -c "select id, year, modelid from vehicles where ownerid = $userid")
+  count=$(psql -t -d postgres -c "select count(*) from vehicles where ownerid = $userid")
+  result=$(echo $result | sed 's/|//g' | tr -s ' ' | tr -d '\n')
+  get_vehicle_info $result $count
+  printf "$search_results"
+}
+
 get_vehicle_info() {
+  #query result: $1
+  #row count: $2
   result="\nYear\t\tMake\tModel\tOwner\n=====================================\n"
   IFS='-'
   read -ra data <<<"$1"
@@ -109,10 +120,7 @@ show_user_menu() {
       vehicle_add
       ;;
     "Your Vehicles")
-      result=$(psql -t -d postgres -c "select id, year, modelid from vehicles where ownerid = $userid")
-      count=$(psql -t -d postgres -c "select count(*) from vehicles where ownerid = $userid")
-      result=$(echo $result | sed 's/|//g' | tr -s ' ' | tr -d '\n')
-      get_vehicle_info $result $count
+      show_owned_vehicles
       ;;
     Search)
       vehicle_search
