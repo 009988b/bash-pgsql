@@ -130,7 +130,7 @@ create table vehicles(
 );
 commit;
 
--- view of every model name and their respective makename
+-- view of every model name and their respective make
 begin;
 create view makemodel as
 	(select name from makes where id = models.makeid) "make", name "model"  from models;
